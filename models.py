@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -13,11 +13,11 @@ class Car:
 
 @dataclass
 class Point:
-    radius: int
-    acceleration: int
-    is_pit_stop: bool
+    radius: float
+    acceleration: float = None
+    is_pit_stop: bool = None
 
 
 @dataclass
 class Track:
-    points: [Point]
+    points: [Point] = field(default_factory=list)
