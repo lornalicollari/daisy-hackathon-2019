@@ -1,5 +1,7 @@
 from math import *
 
+INFINITY = -1
+
 
 def calc_velocity(velocity: int, acceleration: int):
     """
@@ -32,12 +34,15 @@ def calc_max_velocity(radius: int, handling: int):
     Calculates the maximum velocity of car with given handling coefficient
     at point with given radius of curvature.
 
-    :param radius: Radius of curvature at the point.
+    :param radius: Radius of curvature at the point. INFINITY if straight line.
     :param handling: Handling coefficient of the car.
-    :return: Maximum velocity of the car at the point.
+    :return: Maximum velocity of the car at the point. INFINITY if no max.
     """
-    radicand = (radius * handling) / 1_000_000
-    return sqrt(radicand)
+    if radius == INFINITY:
+        return INFINITY
+    else:
+        radicand = (radius * handling) / 1_000_000
+        return sqrt(radicand)
 
 
 def calc_gas_usage(acceleration: int):
