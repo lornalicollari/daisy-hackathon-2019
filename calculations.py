@@ -69,3 +69,8 @@ def calc_wear(acceleration: int):
         return 0.1 * (acceleration ** 2)
     else:
         return 0
+
+
+def calc_travel_time(distance: int, init_velocity: float, target_velocity: float,
+                     acceleration: float, breaking: float) -> float:
+    pass
