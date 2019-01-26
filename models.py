@@ -26,3 +26,6 @@ class Point:
 @dataclass
 class Track:
     points: List[Point] = field(default_factory=list)
+
+    def get_radii(self) -> [float]:
+        return list(map(lambda p: p.radius, self.points))

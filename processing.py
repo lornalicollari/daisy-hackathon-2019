@@ -30,4 +30,4 @@ def bwd_pass(track: Track, car: Car):
 
 
 if __name__ == '__main__':
-    track = read_track_1()
+    track = read_track_n(1)
