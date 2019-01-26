@@ -29,7 +29,7 @@ def calc_travel_time(velocity: int, acceleration: int = 0):
         return (calc_velocity(velocity, acceleration) - velocity) / acceleration
 
 
-def calc_max_velocity(radius: int, handling: int):
+def calc_max_velocity(radius: float, handling: int):
     """
     Calculates the maximum velocity of car with given handling coefficient
     at point with given radius of curvature.
