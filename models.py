@@ -1,14 +1,15 @@
 from dataclasses import dataclass, field
 from typing import List
+from calculations import *
 
 
 @dataclass
 class Car:
-    acceleration: int = 10
-    breaking: int = 10
-    top_speed: int = 10
-    gas_capacity: int = 500
-    tire_duration: int = 500
+    acceleration: float = 10
+    breaking: float = 10
+    top_speed: float = 10
+    gas_capacity: float = 500
+    tire_duration: float = 500
     handling: int = 9
     cost: int = 0
 
@@ -29,3 +30,6 @@ class Track:
 
     def get_radii(self) -> [float]:
         return list(map(lambda p: p.radius, self.points))
+
+    def calc_time(self) -> float:
+        return sum(calc_travel_time(p.max_velocity, p.max_acceleration) for p in self.points)

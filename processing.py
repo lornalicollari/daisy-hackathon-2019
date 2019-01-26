@@ -16,7 +16,8 @@ def pairwise(iterable: Iterable[T]) -> (T, T):
 def fwd_pass(track: Track, car: Car):
     track.points[0].max_velocity = 0
     for prev, this in pairwise(track.points):
-        this.max_velocity = min(prev.max_velocity + car.acceleration,
+        this.max_velocity = min(car.top_speed,
+                                prev.max_velocity + car.acceleration,
                                 calc_max_velocity(this.radius, car.handling))
 
 
@@ -27,7 +28,3 @@ def bwd_pass(track: Track, car: Car):
         if this.max_acceleration < -1 * car.breaking:
             this.max_acceleration = -1 * car.breaking
             this.max_velocity = next.max_velocity + car.breaking
-
-
-if __name__ == '__main__':
-    track = read_track_n(1)

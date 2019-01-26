@@ -1,9 +1,10 @@
 from math import *
 
-INFINITY = -1
+STRAIGHT_LINE = -1
+INFINITY = 1_000_000
 
 
-def calc_velocity(velocity: int, acceleration: int):
+def calc_velocity(velocity: float, acceleration: float):
     """
     Calculates the velocity when the car travels from point x to point x+1.
 
@@ -15,7 +16,7 @@ def calc_velocity(velocity: int, acceleration: int):
     return sqrt(radicand)
 
 
-def calc_travel_time(velocity: int, acceleration: int = 0):
+def calc_travel_time(velocity: float, acceleration: float = 0):
     """
     Calculates the time it takes to travel from point x to point x+1.
 
@@ -34,11 +35,11 @@ def calc_max_velocity(radius: float, handling: int):
     Calculates the maximum velocity of car with given handling coefficient
     at point with given radius of curvature.
 
-    :param radius: Radius of curvature at the point. INFINITY if straight line.
+    :param radius: Radius of curvature at the point. STRAIGHT_LINE if straight line.
     :param handling: Handling coefficient of the car.
     :return: Maximum velocity of the car at the point. INFINITY if no max.
     """
-    if radius == INFINITY:
+    if radius == STRAIGHT_LINE:
         return INFINITY
     else:
         radicand = (radius * handling) / 1_000_000
