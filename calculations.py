@@ -1,4 +1,7 @@
 from math import *
+from typing import List
+
+from models import Point
 
 STRAIGHT_LINE = -1
 INFINITY = 1_000_000
@@ -71,6 +74,10 @@ def calc_wear(acceleration: int):
         return 0
 
 
-def calc_travel_time(distance: int, init_velocity: float, target_velocity: float,
-                     acceleration: float, breaking: float) -> float:
-    pass
+def calc_travel_time(points: List[Point], initial_velocity: int = 0):
+    velocity = initial_velocity
+    time = 0
+    for point in points:
+        time += calc_travel_time(velocity, point.acceleration)
+        velocity = calc_velocity(velocity, point.acceleration)
+    return time
