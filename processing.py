@@ -28,3 +28,11 @@ def bwd_pass(track: Track, car: Car):
         if this.max_acceleration < -1 * car.breaking:
             this.max_acceleration = -1 * car.breaking
             this.max_velocity = next.max_velocity + car.breaking
+
+
+def find_next_lower(track: Track, this_index: int):
+    this = track.points[this_index]
+    for i, nxt in enumerate(track.points[this_index + 1:]):
+        if nxt.max_velocity <= this.max_velocity:
+            return i, nxt
+
