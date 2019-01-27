@@ -33,6 +33,7 @@ def max_acceleration_pass(track: Track, car: Car):
         this.max_acceleration = (nxt.max_velocity ** 2 - this.max_velocity ** 2) / 2
         if this.max_acceleration > car.acceleration:
             # Can't speed up enough, so correct next max velocity.
+            this.max_acceleration = car.acceleration
             nxt.max_velocity = calc_velocity(this.max_velocity, this.max_acceleration)
             if nxt.next:
                 calc(this.next, nxt.next)
