@@ -44,7 +44,7 @@ def max_acceleration_pass(track: Track, car: Car):
 
 def pit_stop_pass(track: Track, car: Car):
     """
-    Look for first point where gas or tires run out in one forward pass,
+    Looks for first point where gas or tires run out in one forward pass,
     and add a pit stop at or slightly before it.
     """
     track.points[0].gas_usage = calc_gas_usage(track.points[0].max_acceleration)
@@ -120,4 +120,5 @@ def test(car: Car, track: Track):
 
 
 if __name__ == '__main__':
-    find_optimal_car()
+    r = test(Car(), read_track_n(4))
+    print(r)
