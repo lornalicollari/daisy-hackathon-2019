@@ -35,6 +35,7 @@ def max_acceleration_pass(track: Track, car: Car):
         # Correct maximum acceleration
         new_nxt_max_velocity = calc_velocity(this.max_velocity, this.max_acceleration)
         if new_nxt_max_velocity != nxt.max_velocity:
+            nxt.max_velocity = new_nxt_max_velocity
             calc(this.prev, nxt.prev)
 
     track.points[-1].max_acceleration = 0
@@ -116,9 +117,4 @@ def test(car: Car, track: Track):
         done = pit_stop_pass(track, car)
         max_velocity_pass(track, car)
         max_acceleration_pass(track, car)
-    return calc_points_time(track.points)
-
-
-if __name__ == '__main__':
-    r = test(Car(), read_track_n(4))
-    print(r)
+    return calc_points_time(track.points), track

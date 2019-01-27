@@ -15,8 +15,8 @@ class Car:
 
 @dataclass
 class Point:
-    i: int
-    radius: float
+    i: int = None
+    radius: float = None
     acceleration: float = None
     is_pit_stop: bool = None
 
