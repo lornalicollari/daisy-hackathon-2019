@@ -48,10 +48,22 @@ def max_acceleration_pass(track: Track, car: Car):
 
 
 def worthwhile_acceleration_pass(track: Track, car: Car):
-    for this in track.points:
-        next, lowest = find_next_lower(this)
-        print(calc_cost())
-
+    for this in track.points[1:-1]:
+        nxt, lowest = find_next_lower(track, this)
+        acceleration_cost = calc_cost(this.max_velocity, lowest.max_velocity,
+                                      this.max_acceleration, this, nxt, car)
+        acceleration_cost_2 = calc_cost(this.max_velocity, lowest.max_velocity / 2,
+                                        this.max_acceleration / 2, this, nxt, car)
+        # print(acceleration_cost, this.max_acceleration)
+        if acceleration_cost <= 0 and this.max_velocity > 0 and this.max_acceleration > 0:
+            this.max_acceleration = 0
+            # print('not accel')
+        if acceleration_cost_2 < acceleration_cost and this.max_velocity > 0 and this.max_acceleration > 0:
+            this.max_acceleration /= 2
+            nxt.max_velocity /= 2
+            # print('half accel')
+    for prev, nxt in pairwise(track.points):
+        nxt.max_velocity = min(nxt.max_velocity, calc_velocity(prev.max_velocity, car.acceleration))
 
 
 def pit_stop_pass(track: Track, car: Car):
@@ -64,33 +76,36 @@ def pit_stop_pass(track: Track, car: Car):
     for prev, this in pairwise(track.points):
         this.gas_usage = prev.gas_usage + calc_gas_usage(this.max_acceleration)
         this.tire_wear = prev.tire_wear + calc_tire_wear(this.max_acceleration)
+        if this.is_pit_stop:
+            this.gas_usage = 0
+            this.tire_wear = 0
+            continue
         if this.gas_usage > car.gas_capacity:
             add_pit_stop(track, this.i)
             return False
         if this.tire_wear > car.tire_durability:
             add_pit_stop(track, this.i)
             return False
-        if this.is_pit_stop:
-            this.gas_usage = 0
-            this.tire_wear = 0
     return True
 
 
 def add_pit_stop(track: Track, i: int):
     min_point = track.points[i - 1]
-    for point in track.points[i - 2:i - 10:-1]:
-        if point.max_velocity < min_point.max_velocity:
-            min_point = point
+    # for point in track.points[i - 3:i - 10:-1]:
+    #     if point.max_velocity < min_point.max_velocity:
+    #         min_point = point
     min_point.is_pit_stop = True
+    # print('pit at', min_point.i)
 
 
-def find_next_lower(this: Point) -> (Point, Point):
+def find_next_lower(track: Track, this: Point) -> (Point, Point):
     lowest = this.next
     for point in traverse(this):
         if point.max_velocity <= this.max_velocity:
             return point, lowest
         if point.max_velocity < lowest.max_velocity:
             lowest = point
+    return track.points[-1], lowest
 
 
 def find_optimal_car():
@@ -113,12 +128,16 @@ def build_cars():
     return list(filter(lambda c: c.cost <= 18, cars))
 
 
-def test(car: Car, track: Track):
+def test(car: Car, track: Track, w: bool):
     max_velocity_pass(track, car)
     max_acceleration_pass(track, car)
+    if w:
+        worthwhile_acceleration_pass(track, car)
     done = False
     while not done:
         done = pit_stop_pass(track, car)
         max_velocity_pass(track, car)
         max_acceleration_pass(track, car)
+        if w:
+            worthwhile_acceleration_pass(track, car)
     return calc_points_time(track.points), track

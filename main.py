@@ -16,22 +16,22 @@ def build_cars():
             cars.append(car)
     return cars
 
-results = []
+# results = []
 
 
-def test_car(car):
+def test_car(car, w: bool):
     total_score = 0
     for track_num in range(1, 8 + 1):
-        time, track = test(car, read_track_n(track_num))
-        if len(results) > 0 and total_score > min(results, key=lambda r: r[0])[0]:
-            # print('\n', total_score, 'stopped on track', track_num)
-            return None
+        time, track = test(car, read_track_n(track_num), w)
+        # if len(results) > 0 and total_score > min(results, key=lambda r: r[0])[0]:
+        #     # print('\n', total_score, 'stopped on track', track_num)
+        #     return None
         track.points = map(
             lambda p: Point(acceleration=p.max_acceleration, is_pit_stop=p.is_pit_stop),
             track.points)
         total_score += multipliers[track_num] * time
 
-    results.append((total_score, car))
+    # results.append((total_score, car))
     return total_score
 
 
@@ -56,6 +56,21 @@ def test_cars():
 
 
 if __name__ == '__main__':
-    car = Car(gas_capacity_tier=5, tire_durability_tier=5, handling_tier=5)
-    score = test_car(car)
-    print(score)
+    car = Car(acceleration_tier=1, braking_tier=1,
+              top_speed_tier=1,
+              gas_capacity_tier=5, tire_durability_tier=5,
+              handling_tier=5)
+    print(car.cost)
+    # score_t = test_car(car, True)
+    # score_f = test_car(car, False)
+    # print(score_t, score_f - score_t)
+
+    for test_num in range(1, 9):
+        print('track', test_num)
+        track = read_track_n(test_num)
+        test(car, track, False)
+        for point in track.points:
+            point.acceleration = point.max_acceleration
+            # print(point.acceleration, point.max_velocity)
+        write_track_n(test_num, track)
+    write_car(car)

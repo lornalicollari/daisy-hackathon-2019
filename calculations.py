@@ -21,23 +21,25 @@ def calc_velocity(velocity: float, acceleration: float):
         return sqrt(radicand)
 
 
-def calc_travel_time(velocity: float, acceleration: float = 0, distance: float = 1):
+def calc_travel_time(velocity: float, acceleration: float = 0,
+                     distance: float = 1, max_velocity: float = -1):
     """
     Calculates the time it takes to travel from point x to point x+1.
 
     :param velocity: Velocity at point x.
     :param acceleration: Acceleration at point x.
     :param distance: Number of points of travel.
+    :param max_velocity: Maximum velocity to accelerate to. Only when distance != 1.
     :return: Time to travel between point x and point x+distance.
     """
-    if velocity == 0:
+    if velocity == 0 and acceleration == 0:
         return 0
     elif acceleration == 0:
-        return distance / velocity  # distance = 1 m
+        return distance / velocity
     elif distance == 1:
         return (calc_velocity(velocity, acceleration) - velocity) / acceleration
     else:
-        acceleration_time = calc_travel_time(velocity, acceleration)
+        acceleration_time = (max_velocity - velocity) / acceleration
         acceleration_distance = (velocity * acceleration_time) + \
                                 (0.5 * acceleration * acceleration_time ** 2)
         remaining_distance = distance - acceleration_distance
@@ -97,10 +99,17 @@ def calc_tire_wear(acceleration: float):
 #     return time
 
 
-def calc_cost(acceleration: float, start_point: Point, end_point: Point, car: Car):
-    wear = calc_tire_wear(acceleration)
-    gas = calc_gas_usage(acceleration)
-
+def calc_cost(start_velocity: float, max_velocity: float, acceleration: float,
+              start_point: Point, end_point: Point, car: Car):
+    if acceleration == 0:
+        return 0.1
+    gas = calc_gas_usage(acceleration) * (start_velocity * (max_velocity - start_velocity) / acceleration) + \
+                                (0.5 * acceleration * (max_velocity - start_velocity) / acceleration ** 2)
+    wear = calc_tire_wear(-1 * acceleration) * (start_velocity * (max_velocity - start_velocity) / acceleration) + \
+                                (0.5 * acceleration * (max_velocity - start_velocity) / acceleration ** 2)
+    time_gained = \
+        calc_travel_time(start_velocity, acceleration, end_point.i - start_point.i, max_velocity) - \
+        calc_travel_time(start_velocity, 0, end_point.i - start_point.i)
     return 30 * 0.5 * (wear / car.tire_durability + gas / car.gas_capacity) - time_gained
 
 

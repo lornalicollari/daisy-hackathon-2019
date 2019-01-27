@@ -53,6 +53,7 @@ class Point:
     acceleration: float = None
     is_pit_stop: bool = None
 
+    suggested_velocity: float = None
     max_velocity: float = None
     max_acceleration: float = None
     next = None
@@ -62,6 +63,17 @@ class Point:
 
     prev: 'Point' = None
     next: 'Point' = None
+
+    @property
+    def velocity(self):
+        return self.suggested_velocity if self.suggested_velocity is not None else self.max_velocity
+
+    @velocity.setter
+    def velocity(self, val: float):
+        if self.suggested_velocity is not None:
+            self.suggested_velocity = val
+        else:
+            self.max_velocity = val
 
     def __repr__(self):
         return f'Point {self.i}: radius={self.radius} acc={self.acceleration}/{self.max_acceleration} vel={self.max_velocity} pit_stop={self.is_pit_stop}'
