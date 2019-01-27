@@ -1,7 +1,6 @@
 from math import *
+from models import *
 from typing import List
-
-from models import Point
 
 STRAIGHT_LINE = -1
 INFINITY = 1_000_000
@@ -62,7 +61,7 @@ def calc_gas_usage(acceleration: float):
         return 0
 
 
-def calc_tire_wear(acceleration: float):
+def calc_wear(acceleration: float):
     """
     Calculates how much wear has been done to the tire while breaking (de-accelerating)
     :param acceleration: Acceleration at the point.
@@ -72,6 +71,21 @@ def calc_tire_wear(acceleration: float):
         return 0.1 * (acceleration ** 2)
     else:
         return 0
+
+
+# def calc_travel_time(points: List[Point], initial_velocity: int = 0):
+#     velocity = initial_velocity
+#     time = 0
+#     for point in points:
+#         time += calc_travel_time(velocity, point.acceleration)
+#         velocity = calc_velocity(velocity, point.acceleration)
+#     return time
+
+
+def calc_cost(acceleration: float, time_gained: float, car: Car):
+    wear = calc_wear(acceleration)
+    gas = calc_gas_usage(acceleration)
+    return 30 * 0.5 * (wear / car.tire_duration + gas / car.gas_capacity) - time_gained
 
 
 def calc_points_time(points: List[Point], initial_velocity: int = 0):
@@ -85,3 +99,10 @@ def calc_points_time(points: List[Point], initial_velocity: int = 0):
         # if time > 200:
         #     print(point)
     return time
+# def calc_travel_time(points: List[Point], initial_velocity: int = 0):
+#     velocity = initial_velocity
+#     time = 0
+#     for point in points:
+#         time += calc_travel_time(velocity, point.acceleration)
+#         velocity = calc_velocity(velocity, point.acceleration)
+#     return time
