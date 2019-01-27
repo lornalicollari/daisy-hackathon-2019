@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List
 
+
 @dataclass
 class Car:
     acceleration: float = 10
@@ -25,6 +26,9 @@ class Point:
 
     gas_usage: float = None
     tire_wear: float = None
+
+    prev: 'Point' = None
+    next: 'Point' = None
 
 
 @dataclass
