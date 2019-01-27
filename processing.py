@@ -1,7 +1,7 @@
 from calculations import *
 from models import *
 from reader import *
-from utils import pairwise
+from utils import pairwise, round_down, traverse
 
 
 def max_velocity_pass(track: Track, car: Car):
@@ -31,17 +31,27 @@ def max_acceleration_pass(track: Track, car: Car):
     def calc(this: Point, nxt: Point):
         # Find maximum acceleration.
         this.max_acceleration = (nxt.max_velocity ** 2 - this.max_velocity ** 2) / 2
-        this.max_acceleration = min(car.acceleration, this.max_acceleration)
-        this.max_acceleration = max(-1 * car.braking, this.max_acceleration)
-        # Correct maximum acceleration
-        new_nxt_max_velocity = calc_velocity(this.max_velocity, this.max_acceleration)
-        if new_nxt_max_velocity != nxt.max_velocity:
-            nxt.max_velocity = new_nxt_max_velocity
-            calc(this.prev, nxt.prev)
+        if this.max_acceleration > car.acceleration:
+            # Can't speed up enough, so correct next max velocity.
+            nxt.max_velocity = calc_velocity(this.max_velocity, this.max_acceleration)
+            if nxt.next:
+                calc(this.next, nxt.next)
+        if this.max_acceleration < -1 * car.braking:
+            # Can't slow down enough, so correct previous max velocity.
+            this.max_acceleration = -1 * car.braking
+            this.max_velocity = calc_velocity(nxt.max_velocity, car.braking)
+        nxt.max_velocity = calc_velocity(this.max_velocity, this.max_acceleration)
 
     track.points[-1].max_acceleration = 0
     for second, first in pairwise(track.points[::-1]):
         calc(first, second)
+
+
+def worthwhile_acceleration_pass(track: Track, car: Car):
+    for this in track.points:
+        next, lowest = find_next_lower(this)
+        print(calc_cost())
+
 
 
 def pit_stop_pass(track: Track, car: Car):
@@ -74,11 +84,13 @@ def add_pit_stop(track: Track, i: int):
     min_point.is_pit_stop = True
 
 
-def find_next_lower(track: Track, this_index: int):
-    this = track.points[this_index]
-    for i, nxt in enumerate(track.points[this_index + 1:]):
-        if nxt.max_velocity <= this.max_velocity:
-            return i, nxt
+def find_next_lower(this: Point) -> (Point, Point):
+    lowest = this.next
+    for point in traverse(this):
+        if point.max_velocity <= this.max_velocity:
+            return point, lowest
+        if point.max_velocity < lowest.max_velocity:
+            lowest = point
 
 
 def find_optimal_car():

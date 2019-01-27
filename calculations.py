@@ -15,21 +15,36 @@ def calc_velocity(velocity: float, acceleration: float):
     :return: Velocity at point x+1.
     """
     radicand = (velocity ** 2) + (2 * acceleration)
-    return sqrt(radicand)
+    if radicand < 0:
+        return 0
+    else:
+        return sqrt(radicand)
 
 
-def calc_travel_time(velocity: float, acceleration: float = 0):
+def calc_travel_time(velocity: float, acceleration: float = 0, distance: float = 1):
     """
     Calculates the time it takes to travel from point x to point x+1.
 
     :param velocity: Velocity at point x.
     :param acceleration: Acceleration at point x.
-    :return: Time to travel between point x and point x+1.
+    :param distance: Number of points of travel.
+    :return: Time to travel between point x and point x+distance.
     """
-    if acceleration == 0:
-        return 1 / velocity  # distance = 1 m
-    else:
+    if velocity == 0:
+        return 0
+    elif acceleration == 0:
+        return distance / velocity  # distance = 1 m
+    elif distance == 1:
         return (calc_velocity(velocity, acceleration) - velocity) / acceleration
+    else:
+        acceleration_time = calc_travel_time(velocity, acceleration)
+        acceleration_distance = (velocity * acceleration_time) + \
+                                (0.5 * acceleration * acceleration_time ** 2)
+        remaining_distance = distance - acceleration_distance
+        if remaining_distance < 0:
+            raise Exception
+        remaining_time = calc_travel_time(velocity, distance=remaining_distance)
+        return acceleration_time + remaining_time
 
 
 def calc_max_velocity(radius: float, handling: int):
@@ -61,7 +76,7 @@ def calc_gas_usage(acceleration: float):
         return 0
 
 
-def calc_wear(acceleration: float):
+def calc_tire_wear(acceleration: float):
     """
     Calculates how much wear has been done to the tire while breaking (de-accelerating)
     :param acceleration: Acceleration at the point.
@@ -82,10 +97,11 @@ def calc_wear(acceleration: float):
 #     return time
 
 
-def calc_cost(acceleration: float, time_gained: float, car: Car):
-    wear = calc_wear(acceleration)
+def calc_cost(acceleration: float, start_point: Point, end_point: Point, car: Car):
+    wear = calc_tire_wear(acceleration)
     gas = calc_gas_usage(acceleration)
-    return 30 * 0.5 * (wear / car.tire_duration + gas / car.gas_capacity) - time_gained
+
+    return 30 * 0.5 * (wear / car.tire_durability + gas / car.gas_capacity) - time_gained
 
 
 def calc_points_time(points: List[Point], initial_velocity: int = 0):
@@ -96,9 +112,8 @@ def calc_points_time(points: List[Point], initial_velocity: int = 0):
         velocity = calc_velocity(velocity, point.max_acceleration)
         if point.is_pit_stop:
             time += 30
-        # if time > 200:
-        #     print(point)
     return time
+
 # def calc_travel_time(points: List[Point], initial_velocity: int = 0):
 #     velocity = initial_velocity
 #     time = 0

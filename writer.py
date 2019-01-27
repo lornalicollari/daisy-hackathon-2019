@@ -4,7 +4,7 @@ from models import Track, Car
 
 
 def write_track_n(n: int, track: Track):
-    write_track(f'out/track_{n}.csv', track)
+    write_track(f'out/instructions_{n}.csv', track)
 
 
 def write_track(file: str, track: Track):
