@@ -21,6 +21,7 @@ class Point:
 
     max_velocity: float = None
     max_acceleration: float = None
+    next = None
 
     gas_usage: float = None
     tire_wear: float = None
