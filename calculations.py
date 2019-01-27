@@ -49,7 +49,7 @@ def calc_max_velocity(radius: float, handling: int):
         return sqrt(radicand)
 
 
-def calc_gas_usage(acceleration: int):
+def calc_gas_usage(acceleration: float):
     """
     Calculates how much gas is consumed when breaking.
 
@@ -62,7 +62,7 @@ def calc_gas_usage(acceleration: int):
         return 0
 
 
-def calc_wear(acceleration: int):
+def calc_tire_wear(acceleration: float):
     """
     Calculates how much wear has been done to the tire while breaking (de-accelerating)
     :param acceleration: Acceleration at the point.
@@ -74,10 +74,14 @@ def calc_wear(acceleration: int):
         return 0
 
 
-def calc_travel_time(points: List[Point], initial_velocity: int = 0):
+def calc_points_time(points: List[Point], initial_velocity: int = 0):
     velocity = initial_velocity
     time = 0
     for point in points:
-        time += calc_travel_time(velocity, point.acceleration)
-        velocity = calc_velocity(velocity, point.acceleration)
+        time += calc_travel_time(velocity, point.max_acceleration)
+        velocity = calc_velocity(velocity, point.max_acceleration)
+        if point.is_pit_stop:
+            time += 30
+        # if time > 200:
+        #     print(point)
     return time

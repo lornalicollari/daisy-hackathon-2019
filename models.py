@@ -14,12 +14,16 @@ class Car:
 
 @dataclass
 class Point:
+    i: int
     radius: float
     acceleration: float = None
     is_pit_stop: bool = None
 
     max_velocity: float = None
     max_acceleration: float = None
+
+    gas_usage: float = None
+    tire_wear: float = None
 
 
 @dataclass
@@ -28,6 +32,3 @@ class Track:
 
     def get_radii(self) -> [float]:
         return list(map(lambda p: p.radius, self.points))
-
-    # def calc_time(self) -> float:
-    #     return sum(calc_travel_time(p.max_velocity, p.max_acceleration) for p in self.points)

@@ -8,7 +8,9 @@ def read_track_n(n: int):
 
 def read_track(file: str) -> Track:
     track = Track()
+    i = 0
     with open(file) as f:
         for row in csv.DictReader(f):
-            track.points.append(Point(float(row['radius'])))
+            track.points.append(Point(i, float(row['radius'])))
+            i += 1
     return track
