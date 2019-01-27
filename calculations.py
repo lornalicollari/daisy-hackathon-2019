@@ -99,3 +99,10 @@ def calc_points_time(points: List[Point], initial_velocity: int = 0):
         # if time > 200:
         #     print(point)
     return time
+# def calc_travel_time(points: List[Point], initial_velocity: int = 0):
+#     velocity = initial_velocity
+#     time = 0
+#     for point in points:
+#         time += calc_travel_time(velocity, point.acceleration)
+#         velocity = calc_velocity(velocity, point.acceleration)
+#     return time

@@ -13,11 +13,12 @@ def max_velocity_pass(track: Track, car: Car):
         this.max_velocity = 0 if this.is_pit_stop \
             else min(car.top_speed,
                      calc_velocity(prev.max_velocity, car.acceleration),
-                     calc_max_velocity(this.radius, car.handling))
+                     calc_max_velocity(this.radius, car.handling),
+                     calc_max_velocity(prev.radius, car.handling))
 
     track.points[0].max_velocity = 0
     for first, second in pairwise(track.points):
-        # Find maximum possible velocity.
+        # Find maximum possible velocities at each point.
         calc(first, second)
 
 
